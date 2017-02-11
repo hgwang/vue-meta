@@ -13,7 +13,7 @@ export default function _refresh (options = {}) {
    * @return {Object} - new meta info
    */
   return function refresh () {
-    const info = getMetaInfo(options)(this.$root)
+    const info = getMetaInfo(options)(this)
     updateClientMetaInfo(options)(info)
     return info
   }

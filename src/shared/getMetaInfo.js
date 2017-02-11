@@ -49,7 +49,8 @@ export default function _getMetaInfo (options = {}) {
     let info = getComponentOption({
       component,
       option: keyName,
-      deep: true,
+      deep: component.$isServer,
+      backtrace: !component.$isServer,
       arrayMerge (target, source) {
         // we concat the arrays without merging objects contained therein,
         // but we check for a `vmid` property on each object in the array

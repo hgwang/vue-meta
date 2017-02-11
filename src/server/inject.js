@@ -11,7 +11,7 @@ export default function _inject (options = {}) {
    */
   return function inject () {
     // get meta info with sensible defaults
-    const info = getMetaInfo(options)(this.$root)
+    const info = getMetaInfo(options)(this)
 
     // generate server injectors
     for (let key in info) {

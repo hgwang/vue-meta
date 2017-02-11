@@ -11,11 +11,12 @@ import deepmerge from 'deepmerge'
  * @param  {String} opts.option - what option to look for
  * @param  {Boolean} opts.deep - look for data in child components as well?
  * @param  {Function} opts.arrayMerge - how should arrays be merged?
+ * @param  {Boolean} opts.backtrace - look for data in ancestor components as well??
  * @param  {Object} [result={}] - result so far
  * @return {Object} result - final aggregated result
  */
 export default function getComponentOption (opts, result = {}) {
-  const { component, option, deep, arrayMerge } = opts
+  const { component, option, deep, arrayMerge, backtrace } = opts
   const { $options } = component
 
   // only collect option data if it exists
@@ -38,6 +39,18 @@ export default function getComponentOption (opts, result = {}) {
     }
   }
 
+  if (backtrace) {
+    const ancestorComponentList = getAncestorComponentList(component)
+    ancestorComponentList.forEach((component) => {
+      result = getComponentOption({
+        component,
+        option,
+        deep,
+        arrayMerge
+      }, result)
+    })
+  }
+
   // collect & aggregate child options if deep = true
   if (deep && component.$children.length) {
     component.$children.forEach((childComponent) => {
@@ -51,4 +64,14 @@ export default function getComponentOption (opts, result = {}) {
   }
 
   return result
+}
+
+function getAncestorComponentList (component) {
+  let currentComponent = component
+  const ancestorComponentList = []
+  while (currentComponent.$parent) {
+    currentComponent = currentComponent.$parent
+    ancestorComponentList.unshift(currentComponent)
+  }
+  return ancestorComponentList
 }
